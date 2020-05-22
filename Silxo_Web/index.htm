@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        html {
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="styles.css">
+    <title>Rate Your Business</title>
+</head>
+
+<body>
+
+    <div class="bg">
+        
+        <div class="header-section">
+            <div class="hbox">Rate Your Business!</div>
+        </div>
+
+        <div>
+            <p class="p">Please Anwser the following questions for a business rating!</p>
+        </div>
+
+        <div class="container">
+
+            <div id="Main" class = "form-container"></div>
+
+            <div class="rating-container">
+                <div class="Rating">
+                    <p class="RatingTxt">YOUR RATING IS!</p>
+                    <p class="Score" id = "Rating"></p>
+                </div>
+            </div>
+            
+        </div>
+        
+
+        
+        <div>
+            <button onclick="submiting()" type = "button" class = "button">
+                    Submit!
+                </button>
+        </div>
+    </div>
+
+ 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        var q 
+        let rating = 0;
+        let answerScores = [];
+        $.get({
+
+            url: "https://localhost:44322/api/silxo",
+
+            contentType: "application/json; charset=UTF-8",
+
+            dataType: "JSON",
+
+            success: function (response) {
+                q = $.parseJSON(response);
+                console.log(q);
+                console.log(typeof(q));
+                fillQuiz();
+            },
+
+            failure: function (response) {
+                console.log("Failed");
+                alert(response);
+
+            }
+        });
+        function fillQuiz(){
+
+
+            for(let i = 0; i<q.questions.length; i++)
+            {
+                let divContainer = $(`<div id = "Question${i+1}"></div>`);
+                $("#Main").append(divContainer);
+            }
+            $(document).ready(function(){
+                $('input[type=radio]').click(function () {
+                        
+                            console.log(rating);
+                    });
+            });
+            for(let i = 0; i < q.questions.length;i++)
+            {
+                generateQ(i);
+            }
+
+            function generateQ(qnum){
+
+                let questionContainer = $(`#Question${qnum+1}`);
+                let form = $(`<form class = "p1"></form>`);
+                let header = $(`<p class="QHeader"> Question ${qnum + 1}!</p>`)
+                let question = $(`<p class="p1">${q.questions[qnum].question}</p>`)
+                
+                questionContainer.append(header);
+                questionContainer.append(question);
+
+                if (q.questions[qnum].type == 0) {
+                    for (let i = 0; i < q.questions[qnum].answers.length; i++) {
+                        let input = $(` <input type="radio" name = "answer" value = "${q.questions[qnum].answers[i].Score}">`);
+                        let lable = $(` <label for ="answer"id = "answer${i + 1}"></label>`);
+                        lable.text(q.questions[qnum].answers[i].answer);
+
+                        form.append(input);
+                        form.append(lable);
+
+                    }
+                }
+                else if(q.questions[qnum].type == 1)
+                {
+                    let lable = $(` <label for ="answer" id = "answer"> Enter Security information here</label><br>`);
+                    let input = $(` <input type="text" name = "answer" >`);
+                   
+                    form.append(lable);
+                    form.append(input);
+                    
+                }
+           
+                questionContainer.append(form);
+            }
+        }
+
+            function submiting()
+            {
+                rating = 0;
+                $("input[type=radio]:checked").each(function () {
+                   rating = +rating + +this.value;
+                });
+                console.log(rating);
+                document.getElementById("Rating").innerHTML = rating;
+
+            };
+            
+    </script>
+
+</body>
+
+</html>
