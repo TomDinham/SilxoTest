@@ -19,7 +19,7 @@ namespace WebService.Controllers
         MySqlConnection connection;
         MySqlCommand command;
         Questions questions = new Questions();
-
+            
         silxoController()
         {
             connection = new MySqlConnection();
@@ -101,75 +101,7 @@ namespace WebService.Controllers
                 }
             }
         }
-        //public string Get()
-        //{
-        //    try
-        //    {
 
-        //        var dataSet = new DataSet();
-        //        var answers = new DataSet();
-        //        command.CommandText = "SELECT * from sys.question ";
-        //        command.Parameters.Add("@QR", MySqlDbType.Int32);
-        //        connection.Open();
-
-        //        var dataAdapter = new MySqlDataAdapter { SelectCommand = command };
-
-        //        dataAdapter.Fill(dataSet);
-
-        //        foreach (DataTable table in dataSet.Tables)
-        //        {
-        //            foreach (DataRow row in table.Rows)
-        //            {
-        //                data = data + "{\"Question\":\"" + row["Question"] + "\",";
-        //                data = data + "\"type\":" + row["Type"] + ",";
-        //                data = data + "\"Answers\":[";
-
-
-
-        //                var QuestionRef = row["Ref"];
-        //                command.CommandText = "SELECT sys.answer.Answer, sys.answer.Score FROM sys.answer Where sys.answer.QuestionRef =  @QR ";
-
-        //                command.Parameters["@QR"].Value = QuestionRef;
-
-
-        //                dataAdapter = new MySqlDataAdapter { SelectCommand = command };
-        //                answers.Clear();
-        //                dataAdapter.Fill(answers);
-
-        //                foreach (DataTable ATable in answers.Tables)
-        //                {
-        //                    foreach (DataRow ARow in ATable.Rows)
-        //                    {
-        //                        data = data + "{\"Answer\" :\" " + ARow["answer"] + "\",";
-        //                        data = data + "\"Score\" : " + ARow["score"] + "},";
-        //                    }
-        //                    data = data.TrimEnd(',');
-        //                    data = data + "]";
-        //                }
-        //                data = data + "},";
-        //            }
-        //            data = data.TrimEnd(',');
-        //            data = data + "]}";
-        //        }
-
-        //        data = data.TrimEnd(',');
-
-        //        data = JsonConvert.SerializeObject(data);
-        //        return data;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception(ex.Message, ex);
-        //    }
-        //    finally
-        //    {
-        //        if (null != connection)
-        //        {
-        //            connection.Close();
-        //        }
-        //    }
-
-        //}
         public HttpResponseMessage Post()
         {
             return new HttpResponseMessage()
