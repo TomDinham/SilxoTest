@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <style>
+        .hbox{
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    color: lightgrey;
+    font-size: 4vh;
+    text-align: center;
+    margin: auto;
+  
+}
+.p{
+    font: bold;
+    text-align: center;
+    font-size: x-large;
+    
+}
+.QHeader{
+    font: bold;
+    margin-left: 20%;
+    font-size: x-large;
+    text-decoration: underline;
+
+}
+.p1{
+ 
+    font-size: large;
+    padding: 5px;
+    margin-left: 20%;
+}
+.p2{
+    font-size: large;
+    padding: 5px;
+    text-align: center;
+}
+.header-section{
+    width: 100%;
+    height: 5vh;
+    border-color: black;
+    border-style: solid;
+    border-width: 3px;
+    display: flex;
+
+}
+.bg{  
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+}
+.button{
+    
+    width: 10%;
+    margin-left: 45%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color:black;
+    background-color:lightcoral
+    
+}
+.Rating{
+    position: relative;
+    background-color: lightcoral;
+    height: 20vh;
+    width: 20vh;
+    border-color: black;
+    border-style: solid;
+    border-width: 3px;
+}
+.RatingTxt{
+    color: black;
+    text-align: center;
+    font-size: medium;
+}
+.Score{
+    color:black;
+    text-align: center;
+    font-size: xx-large;
+}
+.container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: auto;
+}
+.form-container{
+
+    width: 75%;
+    flex-direction: column;
+    margin: auto;
+    align-items: center;
+}
+.rating-container{
+    display: flex;
+    justify-content: start;
+    width: 25%;
+    flex-direction: column;
+    align-items: center;
+}
+
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        html {
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="/CSS/styles.css">
+    <title>Rate Your Business</title>
+</head>
+
+<body>
+
+    <div class="bg">
+        
+        <div class="header-section">
+            <div class="hbox">Rate Your Business!</div>
+        </div>
+
+        <div>
+            <p class="p">Please Anwser the following questions for a business rating!</p>
+        </div>
+
+        <div class="container">
+
+            <div id="Main" class = "form-container"></div>
+
+            <div class="rating-container">
+                <div class="Rating">
+                    <p class="RatingTxt">YOUR RATING IS!</p>
+                    <p class="Score" id = "Rating"></p>
+                </div>
+            </div>
+            
+        </div>
+        
+
+        
+        <div>
+            <button onclick="submiting()" type = "button" class = "button">
+                    Submit!
+                </button>
+        </div>
+    </div>
+
+ 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        var q 
+        let rating = 0;
+        let answerScores = [];
+        $.get({
+
+            url: "https://localhost:44322/api/silxo",
+
+            contentType: "application/json; charset=UTF-8",
+
+            dataType: "JSON",
+
+            success: function (response) {
+                q = $.parseJSON(response);
+                console.log(q);
+                console.log(typeof(q));
+                fillQuiz();
+            },
+
+            failure: function (response) {
+                console.log("Failed");
+                alert(response);
+
+            }
+        });
+        function fillQuiz(){
+
+
+            for(let i = 0; i<q.questions.length; i++)
+            {
+                let divContainer = $(`<div id = "Question${i+1}"></div>`);
+                $("#Main").append(divContainer);
+            }
+            $(document).ready(function(){
+                $('input[type=radio]').click(function () {
+                        
+                            console.log(rating);
+                    });
+            });
+            for(let i = 0; i < q.questions.length;i++)
+            {
+                generateQ(i);
+            }
+
+            function generateQ(qnum){
+
+                let questionContainer = $(`#Question${qnum+1}`);
+                let form = $(`<form class = "p1"></form>`);
+                let header = $(`<p class="QHeader"> Question ${qnum + 1}!</p>`)
+                let question = $(`<p class="p1">${q.questions[qnum].question}</p>`)
+                
+                questionContainer.append(header);
+                questionContainer.append(question);
+
+                if (q.questions[qnum].type == 0) {
+                    for (let i = 0; i < q.questions[qnum].answers.length; i++) {
+                        let input = $(` <input type="radio" name = "answer" value = "${q.questions[qnum].answers[i].Score}">`);
+                        let lable = $(` <label for ="answer"id = "answer${i + 1}"></label>`);
+                        lable.text(q.questions[qnum].answers[i].answer);
+
+                        form.append(input);
+                        form.append(lable);
+
+                    }
+                }
+                else if(q.questions[qnum].type == 1)
+                {
+                    let lable = $(` <label for ="answer" id = "answer"> Enter Security information here</label><br>`);
+                    let input = $(` <input type="text" name = "answer" >`);
+                   
+                    form.append(lable);
+                    form.append(input);
+                    
+                }
+           
+                questionContainer.append(form);
+            }
+        }
+
+            function submiting()
+            {
+                rating = 0;
+                $("input[type=radio]:checked").each(function () {
+                   rating = +rating + +this.value;
+                });
+                console.log(rating);
+                document.getElementById("Rating").innerHTML = rating;
+
+            };
+            
+    </script>
+
+</body>
+
+</html>
+
